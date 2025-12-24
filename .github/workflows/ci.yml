@@ -47,5 +47,5 @@ jobs:
           
       - name: Build and Push Docker
         run: |
-          docker build -t adisann/retail-demand-forecast:latest .
-          docker push adisann/retail-demand-forecast:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/retail-demand-forecast:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/retail-demand-forecast:latest
