@@ -60,6 +60,9 @@ def main():
     y = df['units_sold']
     
     mlflow.set_experiment("Retail_Demand_Ops")
+    
+    # ENABLE AUTOLOG
+    mlflow.sklearn.autolog(log_models=True, log_input_examples=True, registered_model_name="Retail_Forecasting_Model")
 
     # --- OPTUNA TUNING ---
     def objective(trial):
@@ -83,24 +86,17 @@ def main():
             
             error = rmsle(y_val, preds)
             
-            # Log ke DagsHub
-            mlflow.log_params(params)
             mlflow.log_metric("rmsle", error)
-            
             return error
 
     study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=3) # 3x percobaan saja biar cepat
+    study.optimize(objective, n_trials=3)
     
     # --- FINAL TRAINING ---
     with mlflow.start_run(run_name="Champion_Model"):
         best_params = study.best_params
         model = RandomForestRegressor(**best_params, random_state=42)
         model.fit(X, y)
-        
-        # 1. Log Model ke DagsHub
-        mlflow.sklearn.log_model(model, "model")
-        mlflow.log_params(best_params)
         
         # 2. Buat Artifact (Grafik)
         plt.figure(figsize=(8, 5))
@@ -112,8 +108,10 @@ def main():
         # 3. Upload Artifact ke DagsHub
         mlflow.log_artifact("feature_importance.png")
         
-        # 4. Upload Artifact Tambahan (Requirement) - Agar poin Advance (Artifact > 2)
-        mlflow.log_artifact("Membangun_model/requirements.txt")
+        # 4. Upload Artifact Tambahan
+        if os.path.exists("requirements.txt"):  # Path might be different here
+             mlflow.log_artifact("requirements.txt")
+        
         print("Model, Feature Importance, dan Requirements berhasil di-log ke DagsHub!")
 
 if __name__ == "__main__":
