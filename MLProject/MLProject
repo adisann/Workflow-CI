@@ -1,0 +1,7 @@
+name: Retail_Demand_Forecasting
+
+conda_env: conda.yaml
+
+entry_points:
+  main:
+    command: "python Membangun_model/modelling_tuning.py"

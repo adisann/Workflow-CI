@@ -1,0 +1,16 @@
+name: retail_demand_env
+channels:
+  - defaults
+dependencies:
+  - python=3.9
+  - pip
+  - pip:
+    - pandas
+    - numpy
+    - scikit-learn==1.5.2
+    - category_encoders
+    - mlflow
+    - dagshub
+    - optuna
+    - matplotlib
+    - seaborn
