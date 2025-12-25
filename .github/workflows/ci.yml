@@ -30,7 +30,7 @@ jobs:
       - name: Run Training
         working-directory: MLProject
         run: |
-          mlflow run . --no-conda --experiment-name "Retail_Demand_Forecasting"
+          mlflow run . --env-manager=local --experiment-name "Retail_Demand_Forecasting"
           
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
